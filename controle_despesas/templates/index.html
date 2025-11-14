@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Despesas</title>
+</head>
+<body>
+    <h1>Controle de Despesas</h1>
+
+    <!-- Mensagens flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p style="color: green;">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Formulário de lançamento -->
+    <h2>Adicionar Lançamento</h2>
+    <form method="POST" action="{{ url_for('index') }}">
+        {{ form.hidden_tag() }}
+        
+        <p>{{ form.tipo.label }}<br>{{ form.tipo() }}</p>
+        <p>{{ form.descricao.label }}<br>{{ form.descricao(size=30) }}</p>
+        <p>{{ form.valor.label }}<br>{{ form.valor() }}</p>
+        <p>{{ form.categoria.label }}<br>{{ form.categoria() }}</p>
+        <p>{{ form.data.label }}<br>{{ form.data() }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    <hr>
+
+    <!-- Formulário de filtro -->
+    <h2>Filtrar Lançamentos</h2>
+    <form method="GET" action="{{ url_for('index') }}">
+        {{ filtro_form.hidden_tag() }}
+        <p>{{ filtro_form.tipo.label }}<br>{{ filtro_form.tipo() }}</p>
+        <p>{{ filtro_form.categoria.label }}<br>{{ filtro_form.categoria() }}</p>
+        <p>{{ filtro_form.data_inicio.label }}<br>{{ filtro_form.data_inicio() }}</p>
+        <p>{{ filtro_form.data_fim.label }}<br>{{ filtro_form.data_fim() }}</p>
+        <p>{{ filtro_form.submit() }}</p>
+    </form>
+
+    <hr>
+
+    <!-- Tabela -->
+    <h2>Lançamentos</h2>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Tipo</th>
+            <th>Descrição</th>
+            <th>Valor (R$)</th>
+            <th>Categoria</th>
+            <th>Data</th>
+        </tr>
+        {% for l in lancamentos %}
+        <tr>
+            <td>{{ l.tipo }}</td>
+            <td>{{ l.descricao }}</td>
+            <td>{{ "%.2f"|format(l.valor) }}</td>
+            <td>{{ l.categoria }}</td>
+            <td>{{ l.data.strftime('%d/%m/%Y') }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>💰 Saldo total: R$ {{ "%.2f"|format(saldo) }}</h3>
+</body>
+</html>
